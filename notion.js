@@ -87,8 +87,8 @@ async function main() {
         const courses = await getCourses()
         await createAssignment({
             title: 'test',
-            courses: courses,
-            types: types
+            course: courses,
+            type: types
         })
         console.log("assignment created successfully")
     } catch (error) {
