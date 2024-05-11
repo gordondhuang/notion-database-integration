@@ -1,8 +1,7 @@
+require("dotenv").config()
 const { Client } = require('@notionhq/client')
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY})
-
-// need to create a way to scrape the database ids for each column in table
 
 async function getDatabase() {
     const response = await notion.databases.retrieve({ 
@@ -56,7 +55,7 @@ function createAssignment({title, course, type}) {
             database_id: process.env.NOTION_DATABASE_ID
         },
         properties: {
-            [process.env.NOTION_NAME_ID]: {
+            [process.env.NOTION_ASSGN_NAME_ID]: {
                 title: [
                     {
                         type: 'text',
@@ -80,8 +79,13 @@ function createAssignment({title, course, type}) {
     })
 }
 
+module.exports = {
+    createAssignment,
+    getTypes,
+    getCourses,
+}
+
 async function main() {
-    getDatabase()
     try {
         const types = await getTypes()
         const courses = await getCourses()
