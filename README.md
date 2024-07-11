@@ -1,6 +1,12 @@
 # Notion-Integration
 This project was created to aid students in organizing their course information to optimize productivity.
 
+## Setup
+1. Run this in the terminal
+```bash
+  npm install
+```
+
 ## Usage
 
 **WIP!!!**  
