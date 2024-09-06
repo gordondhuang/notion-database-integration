@@ -2,6 +2,12 @@
 This project was created to aid students in organizing their course information to optimize productivity. Ideally the user has no pre-existing database already set up.
 It currently only works jointly with my other project [Canvas-fetcher](https://github.com/gordondhuang/Canvas-fetcher). 
 
+## Setup
+1. Run this in the terminal
+```bash
+  npm install
+```
+
 ## Usage
 To function correctly **input.txt** must be modified.
 
