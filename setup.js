@@ -3,6 +3,7 @@ const fs = require('fs')
 
 let api_key;
 let db_key;
+
 // gets the API key from input.txt
 async function getIDs() {
     try {
