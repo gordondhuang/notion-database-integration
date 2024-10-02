@@ -10,7 +10,7 @@ To function correctly **input.txt** must be modified.
 3. Use these sequences of commands in the terminal with the folder of the project open as the directory: 
 
     ```bash
-    node setup.js
+    node setup
     
     node notion.js
     

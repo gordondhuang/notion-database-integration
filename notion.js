@@ -1,6 +1,7 @@
 require("dotenv").config()
 const { Client } = require('@notionhq/client')
 const { csvToArray } = require('./parseAssignments')
+const { query } = require("express")
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY})
 
@@ -64,6 +65,11 @@ function notionPropertiesById(properties) {
 // creates a record inside of our database
 async function createAssignment({title, type, course, date}) {
     try {
+        const containsItem = await queryAssignments(title);
+        if(containsItem) {
+           return; 
+        }
+
         currProperties = {
             [process.env.NOTION_ASSGN_NAME_ID]: {
                 title: [
@@ -107,16 +113,22 @@ async function createAssignment({title, type, course, date}) {
     }
 }
 
-async function queryAssignments() {
-    // const resp = await notion.databases.query({
-        //     database_id: process.env.NOTION_DATABASE_ID,
-        //     // filter_properties: [],
-        //     filter: {
-        //         property: "title",
-        //         contains: title
-        //     }
-        // })
-        // console.log(resp);
+// Checks for assignments that are already within the database
+async function queryAssignments(title) {
+    try {
+        const resp = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+        })
+        const currAssignments = await resp.results.map(page => page.properties.Name.title.map(item => item.plain_text)) 
+        for(const item of currAssignments) {
+            if(item.includes(title)) {
+                return true
+            }
+        }
+        return false
+    } catch (error) {
+        console.error("Failed to query database " + error)
+    }
 }
 
 // Gets a matching object from an array if there exists one 
@@ -141,12 +153,10 @@ async function main() {
         const assignments = await csvToArray();
         const types = await getTypes()
         const courses = await getCourses()
-        console.log(courses)
         for (let [index, item] of assignments.entries()) {
             const date = await getDates(item)
             let course;
             course = await multiSelector(item, courses);
-            
             await createAssignment({
                 title: item.Assignments,
                 type: types,
@@ -154,7 +164,6 @@ async function main() {
                 date: date
             })
         }
-        console.log("assignments created successfully")
     } catch (error) {
         console.error('an error occurred', error)
     }
